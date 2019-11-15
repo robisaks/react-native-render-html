@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Image, View, Text } from 'react-native';
+import { Dimensions, Image, Text, View } from 'react-native';
+import ImageZoom from 'react-native-image-pan-zoom';
+
 import PropTypes from 'prop-types';
 
 export default class HTMLImage extends PureComponent {
@@ -102,15 +104,31 @@ export default class HTMLImage extends PureComponent {
         );
     }
 
-    validImage (source, style, props = {}) {
+    validImage(source, style, props = {}) {
+        let maxWidth = this.props.imagesMaxWidth - 35;
         return (
+          <ImageZoom
+            enableHorizontalBounce={false}
+            cropWidth={Dimensions.get('window').width}
+            cropHeight={this.state.height}
+            imageWidth={Dimensions.get('window').width}
+            imageHeight={this.state.height}
+          >
             <Image
               source={source}
-              style={[style, { width: this.state.width, height: this.state.height, resizeMode: 'cover' }]}
-              {...props}
+              style={[
+                {
+                  width: this.state.width,
+                  height: this.state.height,
+                  resizeMode: 'contain',
+                  maxWidth: maxWidth,
+                },
+                { ...props },
+              ]}
             />
+          </ImageZoom>
         );
-    }
+      }
 
     get errorImage () {
         return (
